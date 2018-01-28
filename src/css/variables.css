@@ -1,0 +1,34 @@
+/*
+ * Copyright (c) 2017. Helmetrex Ltd.
+ */
+
+:root {
+  /*
+   * Typography
+   * ======================================================================== */
+
+  --font-family-base: 'Roboto', sans-serif;
+
+  /*
+   * Layout
+   * ======================================================================== */
+
+  --max-content-width: 1000px;
+
+  /*
+   * Media queries breakpoints
+   * ======================================================================== */
+
+  --screen-xs-min: 480px;  /* Extra small screen / phone */
+  --screen-sm-min: 768px;  /* Small screen / tablet */
+  --screen-md-min: 992px;  /* Medium screen / desktop */
+  --screen-lg-min: 1200px; /* Large screen / wide desktop */
+
+  /*
+   * HolyGrail layout variables
+   */
+  --space: 1em;
+  --space-lg: 1.5em;
+
+  @custom-media --lg-viewport (min-width: 992px);
+}

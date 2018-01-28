@@ -1,16 +1,9 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
+/*
+ * Copyright (c) 2017. Helmetrex Ltd.
  */
 
 export function updateTag(tagName, keyName, keyValue, attrName, attrValue) {
-  const node = document.head.querySelector(
-    `${tagName}[${keyName}="${keyValue}"]`,
-  );
+  const node = document.head.querySelector(`${tagName}[${keyName}="${keyValue}"]`);
   if (node && node.getAttribute(attrName) === attrValue) return;
 
   // Remove and create a new tag in order to make it work with bookmarks in Safari

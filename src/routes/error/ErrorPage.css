@@ -1,13 +1,8 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
+/*
+ * Copyright (c) 2017. Helmetrex Ltd.
  */
 
-html {
+.container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16,15 +11,6 @@ html {
   font-family: sans-serif;
   text-align: center;
   color: #888;
-}
-
-body {
-  margin: 0;
-}
-
-h1 {
-  font-weight: 400;
-  color: #555;
 }
 
 pre {

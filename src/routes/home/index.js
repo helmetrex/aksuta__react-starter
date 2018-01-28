@@ -1,32 +1,34 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
+/* eslint-disable arrow-body-style */
+/*
+ * Copyright (c) 2017. Helmetrex Ltd.
  */
 
 import React from 'react';
-import Home from './Home';
-import Layout from '../../components/Layout';
 
-async function action({ fetch }) {
-  const resp = await fetch('/graphql', {
-    body: JSON.stringify({
-      query: '{news{title,link,content}}',
-    }),
-  });
-  const { data } = await resp.json();
-  if (!data || !data.news) throw new Error('Failed to load the news feed.');
+import Home from './Home';
+
+const title = 'Ask2do';
+const key = 'home';
+
+// const loadData = ({ api, store }) => async isClient => {
+//   await testUserProfile(store.dispatch, store.getState, api);
+//   let processId;
+//   if (isClient) {
+//     processId = addRuntimeProcess(store.dispatch);
+//   }
+//   const projectListData = await api('GET_CACHE', '/public/projects');
+//   store.dispatch(setProjectList(projectListData));
+//   if (processId) {
+//     store.dispatch(removeRuntimeProcess(processId));
+//   }
+// };
+
+function action() {
   return {
-    chunks: ['home'],
-    title: 'React Starter Kit',
-    component: (
-      <Layout>
-        <Home news={data.news} />
-      </Layout>
-    ),
+    chunks: [key],
+    title,
+    // loadData: loadData(context),
+    component: <Home key={key} />,
   };
 }
 

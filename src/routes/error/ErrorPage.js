@@ -1,10 +1,5 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
+/*
+ * Copyright (c) 2017. Helmetrex Ltd.
  */
 
 import React from 'react';
@@ -28,17 +23,21 @@ class ErrorPage extends React.Component {
   render() {
     if (__DEV__ && this.props.error) {
       return (
-        <div>
-          <h1>{this.props.error.name}</h1>
-          <pre>{this.props.error.stack}</pre>
+        <div className={s.container}>
+          <div>
+            <h1>{this.props.error.name}</h1>
+            <pre>{this.props.error.stack}</pre>
+          </div>
         </div>
       );
     }
 
     return (
-      <div>
-        <h1>Error</h1>
-        <p>Sorry, a critical error occurred on this page.</p>
+      <div className={s.container}>
+        <div>
+          <h1>Error</h1>
+          <p>Sorry, a critical error occurred on this page.</p>
+        </div>
       </div>
     );
   }

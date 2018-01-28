@@ -1,13 +1,9 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
+/*
+ * Copyright (c) 2017. Helmetrex Ltd.
  */
 
 import 'whatwg-fetch';
+// import { AppContainer } from 'react-hot-loader';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import deepForceUpdate from 'react-deep-force-update';
@@ -15,9 +11,25 @@ import queryString from 'query-string';
 import { createPath } from 'history/PathUtils';
 import App from './components/App';
 import createFetch from './createFetch';
+import { createClientApiRequest } from './createApiRequest';
+import configureStore from './store/configureStore';
 import history from './history';
 import { updateMeta } from './DOMUtils';
 import router from './router';
+
+/* eslint-disable global-require */
+
+// Universal HTTP client
+const fetchInstance = createFetch(fetch, {
+  baseUrl: window.App.apiUrl,
+});
+
+// Initialize a new Redux store
+// http://redux.js.org/docs/basics/UsageWithReact.html
+const store = configureStore(window.App.state, {
+  fetch: fetchInstance,
+  history,
+});
 
 // Global (context) variables that can be easily accessed from any React component
 // https://facebook.github.io/react/docs/context.html
@@ -31,10 +43,10 @@ const context = {
       removeCss.forEach(f => f());
     };
   },
-  // Universal HTTP client
-  fetch: createFetch(fetch, {
-    baseUrl: window.App.apiUrl,
-  }),
+  fetch: fetchInstance,
+  api: createClientApiRequest(fetchInstance),
+  store,
+  storeSubscription: null,
 };
 
 const container = document.getElementById('app');
@@ -63,13 +75,17 @@ async function onLocationChange(location, action) {
 
   const isInitialRender = !action;
   try {
+    const { pathname } = location;
+    const query = queryString.parse(location.search);
+
+
     // Traverses the list of routes in the order they are defined until
     // it finds the first route that matches provided URL path string
     // and whose action method returns anything other than `undefined`.
     const route = await router.resolve({
       ...context,
-      pathname: location.pathname,
-      query: queryString.parse(location.search),
+      pathname,
+      query,
     });
 
     // Prevent multiple page renders during the routing process
@@ -82,55 +98,56 @@ async function onLocationChange(location, action) {
       return;
     }
 
+    // Load additional data
+    if (!isInitialRender && typeof route.loadData === 'function') {
+      route.loadData(true);
+    }
+
     const renderReactApp = isInitialRender ? ReactDOM.hydrate : ReactDOM.render;
-    appInstance = renderReactApp(
-      <App context={context}>{route.component}</App>,
-      container,
-      () => {
-        if (isInitialRender) {
-          const elem = document.getElementById('css');
-          if (elem) elem.parentNode.removeChild(elem);
-          return;
+    appInstance = renderReactApp(<App context={context}>{route.component}</App>, container, () => {
+      if (isInitialRender) {
+        const elem = document.getElementById('css');
+        if (elem) elem.parentNode.removeChild(elem);
+        // return;
+      }
+
+      document.title = route.title;
+
+      updateMeta('description', route.description);
+      // Update necessary tags in <head> at runtime here, ie:
+      // updateMeta('keywords', route.keywords);
+      // updateCustomMeta('og:url', route.canonicalUrl);
+      // updateCustomMeta('og:image', route.imageUrl);
+      // updateLink('canonical', route.canonicalUrl);
+      // etc.
+
+      let scrollX = 0;
+      let scrollY = 0;
+      const targetHash = location.hash.substr(1);
+      if (targetHash) {
+        const target = document.getElementById(targetHash);
+        if (target) {
+          scrollY = window.pageYOffset + target.getBoundingClientRect().top;
         }
-
-        document.title = route.title;
-
-        updateMeta('description', route.description);
-        // Update necessary tags in <head> at runtime here, ie:
-        // updateMeta('keywords', route.keywords);
-        // updateCustomMeta('og:url', route.canonicalUrl);
-        // updateCustomMeta('og:image', route.imageUrl);
-        // updateLink('canonical', route.canonicalUrl);
-        // etc.
-
-        let scrollX = 0;
-        let scrollY = 0;
+      } else {
         const pos = scrollPositionsHistory[location.key];
         if (pos) {
           scrollX = pos.scrollX;
           scrollY = pos.scrollY;
-        } else {
-          const targetHash = location.hash.substr(1);
-          if (targetHash) {
-            const target = document.getElementById(targetHash);
-            if (target) {
-              scrollY = window.pageYOffset + target.getBoundingClientRect().top;
-            }
-          }
         }
+      }
 
-        // Restore the scroll position if it was saved into the state
-        // or scroll to the given #hash anchor
-        // or scroll to top of the page
-        window.scrollTo(scrollX, scrollY);
+      // Restore the scroll position if it was saved into the state
+      // or scroll to the given #hash anchor
+      // or scroll to top of the page
+      window.scrollTo(scrollX, scrollY);
 
-        // Google Analytics tracking. Don't send 'pageview' event after
-        // the initial rendering, as it was already sent
-        if (window.ga) {
-          window.ga('send', 'pageview', createPath(location));
-        }
-      },
-    );
+      // Google Analytics tracking. Don't send 'pageview' event after
+      // the initial rendering, as it was already sent
+      if (window.ga) {
+        window.ga('send', 'pageview', createPath(location));
+      }
+    });
   } catch (error) {
     if (__DEV__) {
       throw error;

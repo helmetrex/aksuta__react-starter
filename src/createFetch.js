@@ -1,10 +1,5 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
+/*
+ * Copyright (c) 2017. Helmetrex Ltd.
  */
 
 /* @flow */
@@ -36,7 +31,7 @@ function createFetch(fetch: Fetch, { baseUrl, cookie }: Options) {
   };
 
   return (url: string, options: any) =>
-    url.startsWith('/graphql') || url.startsWith('/api')
+    url.startsWith('/api')
       ? fetch(`${baseUrl}${url}`, {
           ...defaults,
           ...options,

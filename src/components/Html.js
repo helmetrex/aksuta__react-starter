@@ -1,10 +1,5 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
+/*
+ * Copyright (c) 2017. Helmetrex Ltd.
  */
 
 import React from 'react';
@@ -13,6 +8,14 @@ import serialize from 'serialize-javascript';
 import config from '../config';
 
 /* eslint-disable react/no-danger */
+
+const rootStyle = {
+  position: 'absolute',
+  left: 0,
+  top: 0,
+  right: 0,
+  bottom: 0,
+};
 
 class Html extends React.Component {
   static propTypes = {
@@ -44,10 +47,9 @@ class Html extends React.Component {
           <title>{title}</title>
           <meta name="description" content={description} />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
-          {scripts.map(script => (
-            <link key={script} rel="preload" href={script} as="script" />
-          ))}
-          <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+          {scripts.map(script => <link key={script} rel="preload" href={script} as="script" />)}
+          <link rel="icon" href="/favicon.ico?v=2" />
+          <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
           {styles.map(style => (
             <style
               key={style.id}
@@ -57,10 +59,8 @@ class Html extends React.Component {
           ))}
         </head>
         <body>
-          <div id="app" dangerouslySetInnerHTML={{ __html: children }} />
-          <script
-            dangerouslySetInnerHTML={{ __html: `window.App=${serialize(app)}` }}
-          />
+          <div id="app" style={rootStyle} dangerouslySetInnerHTML={{ __html: children }} />
+          <script dangerouslySetInnerHTML={{ __html: `window.App=${serialize(app)}` }} />
           {scripts.map(script => <script key={script} src={script} />)}
           {config.analytics.googleTrackingId && (
             <script
@@ -74,11 +74,7 @@ class Html extends React.Component {
             />
           )}
           {config.analytics.googleTrackingId && (
-            <script
-              src="https://www.google-analytics.com/analytics.js"
-              async
-              defer
-            />
+            <script src="https://www.google-analytics.com/analytics.js" async defer />
           )}
         </body>
       </html>
